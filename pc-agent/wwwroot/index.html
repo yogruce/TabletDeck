@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <title>Tablet Deck</title>
+  <link rel="stylesheet" href="/style.css?v=8">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand-area">
+      <div class="brand-title">
+        <span class="dot" id="connDot"></span>
+        <b>TABLET DECK</b>
+        <span class="badge" id="pcNameBadge" hidden>PC</span>
+      </div>
+      <small id="status">PIN ile eşleştirme gerekli</small>
+    </div>
+
+    <div class="main-tabs" role="tablist">
+      <button class="tab-btn active" data-tab="deck" role="tab">🎛️ Kontrol Paneli</button>
+      <button class="tab-btn" data-tab="draw" role="tab">✏️ Çizim &amp; Touchpad</button>
+      <button class="tab-btn" data-tab="screen" role="tab">🖼️ Ekran &amp; Envanter</button>
+      <button class="tab-btn" data-tab="settings" role="tab">⚙️ Ayarlar</button>
+    </div>
+
+    <div class="header-actions">
+      <button id="fullscreenBtn" class="icon-btn" title="Tam Ekran">⛶</button>
+      <button id="pairBtn" class="primary-btn">🔑 PIN Eşleştir</button>
+    </div>
+  </header>
+
+  <!-- ======================= TAB 1: DECK (KONTROL PANELİ) ======================= -->
+  <div id="tab-deck" class="tab-panel active">
+    <nav id="profiles" class="profiles-bar"></nav>
+
+    <div class="deck-layout">
+      <section class="card deck-main-card">
+        <div class="card-header">
+          <div>
+            <h2 id="title">Profil</h2>
+            <small class="muted" id="profileSub">Seçili uygulama için hızlı kısayollar</small>
+          </div>
+          <div class="card-actions">
+            <button id="launchBtn" class="accent-btn">🚀 Programı Aç / Öne Getir</button>
+            <button id="addBtnModalOpen" class="secondary-btn">＋ Özel Tuş Ekle</button>
+          </div>
+        </div>
+        <div id="buttons" class="deck-grid"></div>
+      </section>
+
+      <div class="deck-side">
+        <!-- Hızlı Medya & Sistem Araçları -->
+        <section class="card">
+          <h3>⚡ Hızlı Sistem &amp; Medya</h3>
+          <div class="quick-grid">
+            <button class="quick-key" data-key="VOLDOWN">🔉 Ses -</button>
+            <button class="quick-key" data-key="MUTE">🔇 Sessiz</button>
+            <button class="quick-key" data-key="VOLUP">🔊 Ses +</button>
+            <button class="quick-key" data-key="MEDIAPREV">⏮ Önceki</button>
+            <button class="quick-key" data-key="MEDIAPLAY">⏯ Oynat/Dur</button>
+            <button class="quick-key" data-key="MEDIANEXT">⏭ Sonraki</button>
+            <button class="quick-key" data-key="ALT+TAB">🔄 Alt+Tab</button>
+            <button class="quick-key" data-key="WIN+D">🖥️ Masaüstü</button>
+            <button class="quick-key" data-key="PRINTSCREEN">📸 Ekran Gör.</button>
+          </div>
+        </section>
+
+        <!-- Makro Kaydedici ve Oynatıcı -->
+        <section class="card">
+          <div class="card-header-compact">
+            <h3>🎬 Makrolar</h3>
+            <small class="muted" id="recStatus">Kayıt bekleniyor</small>
+          </div>
+          <div class="macro-controls">
+            <input id="macroName" placeholder="Makro adı (örn: Kombo 1)">
+            <button id="rec" class="rec-btn">● Kaydet</button>
+            <button id="save" class="primary-btn">Ekle</button>
+          </div>
+          <div id="macroSeqPreview" class="seq-preview" hidden></div>
+          <div id="macros" class="macro-list"></div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================= TAB 2: ÇİZİM & TOUCHPAD ALANI ======================= -->
+  <div id="tab-draw" class="tab-panel">
+    <div class="draw-workspace" id="drawWorkspace">
+      <div class="draw-toolbar">
+        <div class="tool-group">
+          <label class="tool-label">Mod:</label>
+          <div class="segmented">
+            <button class="seg-btn active" data-penmode="absolute" id="modeAbsBtn" title="Ekranla birebir eşleşen grafik tablet modu">🎯 Grafik Tablet (Mutlak)</button>
+            <button class="seg-btn" data-penmode="relative" id="modeRelBtn" title="Laptop touchpad gibi göreceli imleç hareketi">👆 Touchpad (Göreceli)</button>
+          </div>
+        </div>
+
+        <div class="tool-group">
+          <label class="tool-label">Dokunma Eylemi:</label>
+          <div class="segmented">
+            <button class="seg-btn active" data-penclick="true" id="clickOnBtn" title="Kalemi dokundurunca sol tık basılı tutar (Çizim yapar)">✏️ Çiz / Sol Tıkla</button>
+            <button class="seg-btn" data-penclick="false" id="clickOffBtn" title="Sadece fare imlecini hareket ettirir (Hover)">👀 Sadece İmleç (Hover)</button>
+          </div>
+        </div>
+
+        <div class="tool-group" id="sensGroup">
+          <label class="tool-label">Hassasiyet: <span id="sensVal">1.5x</span></label>
+          <input type="range" id="sensSlider" min="0.5" max="4.0" step="0.1" value="1.5">
+        </div>
+
+        <div class="tool-group">
+          <label class="tool-label">Rehber:</label>
+          <button class="toggle-btn active" id="toggleGridBtn">📏 Izgara</button>
+          <button class="toggle-btn active" id="toggleTrailBtn">✨ İz Göster</button>
+          <button class="toggle-btn" id="toggleBgPreviewBtn" title="Arka planda PC ekranını canlı göster">🖥️ Ekran Altlığı</button>
+          <button class="secondary-btn" id="clearCanvasBtn">🗑️ Temizle</button>
+          <button class="accent-btn" id="zenDrawBtn" title="Tam ekran engelsiz çizim modu">⛶ Tam Alan Modu</button>
+        </div>
+      </div>
+
+      <!-- Sol Hızlı Çizim Kısayolları + Orta Tuval + Sağ Fare/Kaydırma -->
+      <div class="draw-body">
+        <aside class="draw-QuickKeys">
+          <span class="side-caption">Kısayol</span>
+          <button class="draw-key-btn" data-key="CTRL+Z">↩️ Geri Al</button>
+          <button class="draw-key-btn" data-key="CTRL+SHIFT+Z">↪️ İleri Al</button>
+          <button class="draw-key-btn" data-key="B">🖌️ Fırça (B)</button>
+          <button class="draw-key-btn" data-key="E">🧼 Silgi (E)</button>
+          <button class="draw-key-btn" data-key="I">💧 Damlalık</button>
+          <button class="draw-key-btn" data-key="[">🔉 Fırça -</button>
+          <button class="draw-key-btn" data-key="]">🔊 Fırça +</button>
+          <button class="draw-key-btn" data-key="SPACE">✋ Kaydır</button>
+          <button class="draw-key-btn" data-key="CTRL+S">💾 Kaydet</button>
+        </aside>
+
+        <div class="canvas-container" id="canvasContainer">
+          <img id="canvasBgImage" class="canvas-bg" alt="" hidden>
+          <canvas id="pad"></canvas>
+          <div class="canvas-hud" id="canvasHud">
+            <span id="hudCoords">X: 0% Y: 0%</span>
+            <span id="hudPressure">Basınç: 0%</span>
+          </div>
+          <button id="exitZenBtn" class="exit-zen-btn" hidden>✕ Tam Alandan Çık</button>
+        </div>
+
+        <aside class="draw-mouse-bar">
+          <span class="side-caption">Fare &amp; Teker</span>
+          <button class="mouse-btn" id="btnLeftClick">Sol Tık</button>
+          <button class="mouse-btn" id="btnDblClick">Çift Tık</button>
+          <button class="mouse-btn" id="btnRightClick">Sağ Tık</button>
+          <button class="mouse-btn" id="btnMiddleClick">Orta Tık</button>
+          <div class="scroll-strip" id="scrollStrip" title="Yukarı/aşağı kaydırmak için parmağınızı sürükleyin">
+            <span>▲</span>
+            <small>KAYDIR</small>
+            <span>▼</span>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================= TAB 3: EKRAN & ENVANTER ======================= -->
+  <div id="tab-screen" class="tab-panel">
+    <section class="card screen-card">
+      <div class="card-header">
+        <div>
+          <h2>Canlı Ekran &amp; Envanter Önizlemesi</h2>
+          <small class="muted">PC'de seçilen bölgenin anlık görüntüsü — Üzerine dokunarak o noktaya tıklayabilirsiniz</small>
+        </div>
+        <div class="screen-controls">
+          <label class="inline-check">
+            <input type="checkbox" id="screenClickToggle" checked>
+            <span>Görüntüye dokununca PC'de tıkla</span>
+          </label>
+          <select id="refreshRateSelect">
+            <option value="400">Çok Hızlı (0.4 sn)</option>
+            <option value="800" selected>Normal (0.8 sn)</option>
+            <option value="1500">Dengeli (1.5 sn)</option>
+            <option value="3000">Yavaş (3.0 sn)</option>
+            <option value="0">Duraklat</option>
+          </select>
+          <button id="refreshNowBtn" class="secondary-btn">🔄 Şimdi Yenile</button>
+        </div>
+      </div>
+
+      <div class="preview-wrapper" id="previewWrapper">
+        <img id="inventory" class="preview-img" alt="Ekran önizlemesi bekleniyor...">
+        <div id="screenPlaceholder" class="screen-placeholder">
+          <p>📷 Ekran önizlemesi yükleniyor veya kapalı.</p>
+          <small>Eğer kapalıysa <b>Ayarlar</b> sekmesinden veya PC Eşlikçisi penceresinden "Ekran paylaşımını etkinleştir" seçeneğini açabilirsiniz.</small>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ======================= TAB 4: AYARLAR ======================= -->
+  <div id="tab-settings" class="tab-panel">
+    <div class="settings-grid">
+      <section class="card">
+        <h2>🖥️ PC Ekran Kırpma Ayarları</h2>
+        <p class="muted">Tablette gösterilecek oyun envanteri veya ekran bölgesini buradan uzaktan ayarlayabilirsiniz.</p>
+        <div class="form-group">
+          <label class="inline-check">
+            <input type="checkbox" id="cfgScreenEnabled">
+            <b>Ekran paylaşımını etkinleştir</b>
+          </label>
+        </div>
+        <div class="form-row-4">
+          <div>
+            <label>Sol (X)</label>
+            <input type="number" id="cfgCropX" value="0">
+          </div>
+          <div>
+            <label>Üst (Y)</label>
+            <input type="number" id="cfgCropY" value="0">
+          </div>
+          <div>
+            <label>Genişlik (W)</label>
+            <input type="number" id="cfgCropW" value="900" min="50">
+          </div>
+          <div>
+            <label>Yükseklik (H)</label>
+            <input type="number" id="cfgCropH" value="700" min="50">
+          </div>
+        </div>
+        <div class="row-actions">
+          <button id="saveScreenCfgBtn" class="primary-btn">💾 Ekran Ayarlarını Kaydet</button>
+          <button id="setFullScreenCfgBtn" class="secondary-btn">🖥️ Tam Ekran (1920x1080) Yap</button>
+        </div>
+        <small id="cfgSaveMsg" class="status-note"></small>
+      </section>
+
+      <section class="card">
+        <h2>⌨️ PC'ye Doğrudan Metin Gönder</h2>
+        <p class="muted">Tabletten yazdığınız metni PC'de açık olan pencereye anında yazar.</p>
+        <div class="macro-controls">
+          <input id="directTextInput" placeholder="PC'ye yazılacak metin...">
+          <button id="sendDirectTextBtn" class="primary-btn">Gönder</button>
+          <button id="sendDirectEnterBtn" class="secondary-btn">Gönder + Enter</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>🛠️ Profil &amp; Veri Yönetimi</h2>
+        <p class="muted">Eklediğiniz özel tuşları veya makroları sıfırlayabilir, bağlantıyı yenileyebilirsiniz.</p>
+        <div class="row-actions">
+          <button id="resetCustomButtonsBtn" class="danger-btn">Özel Tuşları Sıfırla</button>
+          <button id="clearAllMacrosBtn" class="danger-btn">Tüm Makroları Sil</button>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- ======================= MODAL: PIN EŞLEŞTİRME ======================= -->
+  <div id="pairModal" class="modal" hidden>
+    <div class="modalCard">
+      <h2>🔐 PC Eşleştirme</h2>
+      <p>PC Eşlikçisi penceresinde yazan 6 haneli PIN kodunu girin.</p>
+      <input id="pinInput" inputmode="numeric" autocomplete="one-time-code" placeholder="Örn: 482915">
+      <div class="row-actions">
+        <button id="pairConfirm" class="primary-btn">Eşleştir ve Bağlan</button>
+        <button id="pairCancel" class="secondary-btn">İptal</button>
+      </div>
+      <small id="pairMessage"></small>
+    </div>
+  </div>
+
+  <!-- ======================= MODAL: ÖZEL TUŞ EKLE ======================= -->
+  <div id="addBtnModal" class="modal" hidden>
+    <div class="modalCard">
+      <h2>＋ Özel Kısayol Tuşu Ekle</h2>
+      <p><b id="addBtnProfileName"></b> profiline yeni bir kısayol düğmesi ekleyin.</p>
+      <div class="form-group">
+        <label>Düğme Etiketi</label>
+        <input id="customBtnLabel" placeholder="Örn: Katmanı Çoğalt">
+      </div>
+      <div class="form-group">
+        <label>Tuş Kombinasyonu (Artı ile ayırın)</label>
+        <input id="customBtnKey" placeholder="Örn: CTRL+J veya CTRL+SHIFT+N veya F5">
+        <small class="muted">Desteklenenler: CTRL, SHIFT, ALT, WIN, SPACE, TAB, ENTER, ESC, F1-F12, A-Z, 0-9, [, ], +, -</small>
+      </div>
+      <div class="row-actions">
+        <button id="customBtnSave" class="primary-btn">Düğmeyi Ekle</button>
+        <button id="customBtnCancel" class="secondary-btn">İptal</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/app.js?v=8"></script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+# Build tools & local SDKs
+android-build-tools/
+tablet-android/.gradle/
+tablet-android/build/
+tablet-android/app/build/
+tablet-android/local.properties
+
+# .NET build artifacts & runtime libraries (source is in pc-agent/)
+pc-agent/bin/
+pc-agent/obj/
+pc-agent/publish-out/
+pc-agent/*.dll
+pc-agent/*.exe
+pc-agent/*.pdb
+pc-agent/*.staticwebassets.endpoints.json
+pc-agent/web.config
+
+# Local shortcuts & OS files
+*.lnk
+.DS_Store
+Thumbs.db
